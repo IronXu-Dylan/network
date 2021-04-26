@@ -39,6 +39,15 @@ public class Client {
                 System.out.print("密码：");
                 msg.setPasswd(input.next());
 
+                while(msg.getUserName().length() > 20 || msg.getPasswd().length() > 30) {
+                    System.out.println("用户名或密码过长，请重新输入！");
+                    System.out.print("用户名：");
+                    msg.setUserName(input.next());
+                    System.out.print("密码：");
+                    msg.setPasswd(input.next());
+                }
+
+
                 msg.setTotalLength(58);
 
                 OutputStream out = clientSocket.getOutputStream();
