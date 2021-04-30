@@ -1,6 +1,8 @@
 package final_work;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
     private int totalLength;
     private int commandID;
     private String userName;
