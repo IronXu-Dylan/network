@@ -68,7 +68,7 @@ public class Client {
                 msg_recv.setTotalLength(ByteBuffer.allocate(4).put(recv, 0, 4).getInt(0));
                 msg_recv.setCommandID(ByteBuffer.allocate(4).put(recv, 4, 4).getInt(0));
                 msg_recv.setStatus(recv[8]);
-                msg_recv.setDescription(new String(recv, 9, 64));
+                msg_recv.setDescription((new String(recv, 9, 64)).trim());
                 System.out.println("{" + "\n" +
                         "\ttotalLength: " + msg_recv.getTotalLength() + "\n" +
                         "\tcommandID: " + msg_recv.getCommandID() + "\n" +

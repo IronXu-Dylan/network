@@ -22,8 +22,8 @@ public class Server {
                 Message msg_recv = new Message();
                 msg_recv.setTotalLength(ByteBuffer.allocate(4).put(recv, 0, 4).getInt(0));
                 msg_recv.setCommandID(ByteBuffer.allocate(4).put(recv, 4, 4).getInt(0));
-                msg_recv.setUserName(new String(recv, 8, 20, "UTF-8"));
-                msg_recv.setPasswd(new String(recv, 28, 30, "UTF-8"));
+                msg_recv.setUserName((new String(recv, 8, 20, "UTF-8")).trim());
+                msg_recv.setPasswd((new String(recv, 28, 30, "UTF-8")).trim());
                 System.out.println("{" + "\n" +
                         "\ttotalLength: " + msg_recv.getTotalLength() + "\n" +
                         "\tcommandID: " + msg_recv.getCommandID() + "\n" +
