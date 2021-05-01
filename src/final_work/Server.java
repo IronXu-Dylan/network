@@ -86,7 +86,7 @@ public class Server {
                                     msg_res.setDescription("登录成功");
                                 } else {
                                     msg_res.setStatus((byte)0);
-                                    msg_res.setDescription("登录失败");
+                                    msg_res.setDescription("登录失败：密码不正确");
                                 }
                                 break;
                             }
@@ -95,7 +95,7 @@ public class Server {
                         }
                         if(!flag) {
                             msg_res.setStatus((byte)0);
-                            msg_res.setDescription("登录失败");
+                            msg_res.setDescription("登录失败：用户名不存在");
                         }
 
                         br.close();
