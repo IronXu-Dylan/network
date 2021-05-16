@@ -3,6 +3,7 @@ package final_work;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 public class Server {
     class Worker implements Runnable {
@@ -16,8 +17,13 @@ public class Server {
         public void run() {
             try {
                 InputStream in = clientSocket.getInputStream();
-                ObjectInputStream ois = new ObjectInputStream(in);
-                Message msg_recv = (Message) ois.readObject();
+                byte[] recv = new byte[58];
+                in.read(recv);
+                Message msg_recv = new Message();
+                msg_recv.setTotalLength(ByteBuffer.allocate(4).put(recv, 0, 4).getInt(0));
+                msg_recv.setCommandID(ByteBuffer.allocate(4).put(recv, 4, 4).getInt(0));
+                msg_recv.setUserName((new String(recv, 8, 20, "UTF-8")).trim());
+                msg_recv.setPasswd((new String(recv, 28, 30, "UTF-8")).trim());
                 System.out.println("{" + "\n" +
                         "\ttotalLength: " + msg_recv.getTotalLength() + ",\n" +
                         "\tcommandID: " + msg_recv.getCommandID() + ",\n" +
@@ -28,6 +34,7 @@ public class Server {
                         "}");
 
                 Message msg_res = new Message();
+                msg_res.setTotalLength(73);
                 // 处理注册请求
                 if(msg_recv.getCommandID() == 1) {
                     msg_res.setCommandID(2);
@@ -105,12 +112,17 @@ public class Server {
                         e.printStackTrace();
                     }
                 }
-                msg_res.setTotalLength(8 + (msg_res.getStatus() + msg_res.getDescription()).length());
 
                 OutputStream out = clientSocket.getOutputStream();
-                ObjectOutputStream oos = new ObjectOutputStream(out);
-                oos.writeObject(msg_res);
-                oos.flush();
+                byte[] send = new byte[73];
+                byte[] arr;
+                arr = ByteBuffer.allocate(4).putInt(msg_res.getTotalLength()).array();
+                System.arraycopy(arr, 0, send, 0, 4);
+                arr = ByteBuffer.allocate(4).putInt(msg_res.getCommandID()).array();
+                System.arraycopy(arr, 0, send, 4, 4);
+                send[8] = msg_res.getStatus();
+                System.arraycopy(msg_res.getDescription().getBytes("UTF-8"), 0, send, 9, msg_res.getDescription().getBytes("UTF-8").length);
+                out.write(send);
 
             } catch (Exception e) {
                 e.printStackTrace();
